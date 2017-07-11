@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+.idea/
+dev-muc3-*
+out*
+outp_qn_noun.txt
+outp_v_verb.txt
+
 # Distribution / packaging
 .Python
 env/

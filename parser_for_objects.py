@@ -67,6 +67,7 @@ verb_obj_parsing("dev-muc3-0001-0100","outp")
 
 
 
+verb_obj_parsing("dev-muc3-0001-0100","outp")
 
 
 
