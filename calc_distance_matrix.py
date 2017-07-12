@@ -7,6 +7,7 @@ import nltk,numpy as np
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 import math
+from collections import Counter
 
 
 class Distance_Calc(object):
@@ -14,14 +15,18 @@ class Distance_Calc(object):
 
 
 
-    def __init__(self):
+    def __init__(self,input_file):
         self.word_sent = dict()
         self.mylist = list()
+        self.text = open(input_file).read()
+        self.g_matrix = None#np.zeros((1,1))
+        self.Cdist_matrix = None#np.zeros((1, 1))
+        self.pmi_matrix = None  # np.zeros((1, 1))
 
     def sentence_indexing(self, input_file):
-        text = open(input_file).read()
-        sents = nltk.sent_tokenize(text)
-        allwords = nltk.word_tokenize(text)
+
+        sents = nltk.sent_tokenize(self.text)
+        allwords = nltk.word_tokenize(self.text)
         stop_words = set(stopwords.words('english'))
         filtered_words = [w for w in allwords if not w in stop_words]
         index = 0
@@ -46,62 +51,92 @@ class Distance_Calc(object):
         # print('res of {} and {} is {} {}'.format(key1, key2,t,res))
         return (res)
 
-    D = [1, 2]
 
-    def C_dist(self, _matrix,  _row, _col):
-        rows = _matrix.shape[0]
-        cols = _matrix.shape[1]
-        for d in range(D):
-            for i in rows:
-                for j in cols:
-                    res = (1 - math.log(_matrix[_row][_col], 4))
-                print(res)
+    def C_dist(self, wi, wj):
+        res = (1 - math.log(self.Gwi_wj(wi,wj), 4))
+        #print(res)
         return res
 
-    '''
-    tmp = 0
-    for i in k:
-        for i2 in l:
-            k +=C_dist(Wi,Wj)/tmp
-    '''
 
-    def fill_matrix(self, output_file):
+
+
+
+    def fill_G_matrix(self):
         self.mylist = self.word_sent.keys()
-        g_matrix = np.zeros((len(self.mylist), len(self.mylist)))
-        C_matrix = np.zeros((len(self.mylist), len(self.mylist)))
-        output = open("{0}_matrix.txt".format(output_file), "w")
+        self.g_matrix = np.zeros((len(self.mylist), len(self.mylist)))
+        #self.g_matrix.resize(((len(self.mylist), len(self.mylist))))
+        print(np.shape(self.g_matrix))
+        #output = open("{0}_matrix.txt".format(output_file), "w")
         for i in range(len(self.mylist)):
             for j in range(len(self.mylist)):
-                g_matrix[i, j] = self.Gwi_wj(self.mylist[i], self.mylist[j])
+                self.g_matrix[i, j] = self.Gwi_wj(self.mylist[i], self.mylist[j])
+        #np.savetxt(output, C_matrix, fmt="%i", delimiter=' ', newline='\n')
+        return self.g_matrix
 
+
+    def fill_Cdist_matrix(self):
+        self.mylist = self.word_sent.keys()
+        self.Cdist_matrix = np.zeros((len(self.mylist), len(self.mylist)))
+        print("asdfghjkl",np.shape(self.Cdist_matrix))
+
+        #output = open("{0}_matrix.txt".format(output_file), "w")
         for i in range(len(self.mylist)):
             for j in range(len(self.mylist)):
-                C_matrix[i, j] = self.C_dist(g_matrix, i, j)
+                self.Cdist_matrix[i, j] = self.C_dist(self.mylist[i], self.mylist[j])
+        #np.savetxt(output, C_matrix, fmt="%i", delimiter=' ', newline='\n')
+        return self.Cdist_matrix
 
-        np.savetxt(output, C_matrix, fmt="%i", delimiter=' ', newline='\n')
-        return C_matrix
+    def fill_pmi_matrix(self):
+        self.mylist = self.word_sent.keys()
+        self.pmi_matrix = np.zeros((len(self.mylist), len(self.mylist)))
+    
+        for i in range(len(self.mylist)):
+            for j in range(len(self.mylist)):
+                self.pmi_matrix[i, j] = self.pmi(self.mylist[i], self.mylist[j])
+        # np.savetxt(output, C_matrix, fmt="%i", delimiter=' ', newline='\n')
+        return self.pmi_matrix
 
 
 
-        # np.savetxt(output, g_matrix, fmt = "%i", delimiter=' ', newline='\n')
-       # np.savetxt(output, g_matrix, fmt="%i", delimiter=' ', newline='\n')
-        # output.write(g_matrix)
+    def P_word(self, in_word):
 
-        # output.close()
+        cntr = Counter(self.text.lower().split())
+        word_cnt = cntr[in_word]
+        denominator = sum(cntr.values())
+        print(word_cnt)
+        print(denominator)
+        res = float(word_cnt) / denominator
+        return res
+
+    def Pdist(self,wi, wj):
+        tmp =0
+        m = len(self.mylist)-1
+        denom = sum(sum(self.Cdist_matrix[i][i - m:]) for i in xrange(m))
+        res =float(self.Cdist_matrix(wi, wj))/denom
+        return res
+
+    def pmi(self, wi, wj):
+        self.pmi_matrix = np.zeros((len(self.mylist), len(self.mylist)))
+        denom = self.P_word(wi) * self.P_word(wj)
+        res = float(self.Pdist(wi, wj))/denom
+        return res
+
+
 
     def calculate_distance(self, input_file, output_file, key1, key2):
         self.sentence_indexing(input_file)
         res = self.Gwi_wj(key1, key2)
-        print(res)
-        self.fill_matrix(output_file)
+        #print(res)
+        self.fill_G_matrix()
+        self.fill_Cdist_matrix()
+        #print("{}, {}, {}", len(self.mylist), np.shape(self.Cdist_matrix), np.shape(self.g_matrix))
         return (res)
 
-
 ola = Distance_Calc()
-out = ola.calculate_distance("dev-muc3-0001-0100", "out", 'SOURCE', 'KILLED')
+out = ola.calculate_distance("test_file.txt", "out", 'hand', 'foot')
 print('result is: {}'.format(out))
-y = np.loadtxt("out_matrix.txt", dtype=int)
-print(y)
+#y = np.loadtxt("out_matrix.txt", dtype=int)
+#print(y)
 
 '''
     Sample calling!
@@ -117,3 +152,4 @@ print(y)
     y = np.loadtxt("test.txt",  dtype= int)
     print(y)
     '''
+
