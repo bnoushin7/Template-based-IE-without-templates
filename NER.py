@@ -29,7 +29,7 @@ def NER(input_file, output_file):
 #output = open('output.txt','w')
 #testset = open("dev-muc3-0001-0100").readlines()
 
-NER("dev-muc3-0001-0100","output")
+NER("test_file.txt","output")
 '''
 Sample calling:
 NER("dev-muc3-0001-0100","output")

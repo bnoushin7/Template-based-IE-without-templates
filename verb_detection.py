@@ -21,6 +21,7 @@ def verb_detection(input_file, output_name):
                 verbs.append(word)
         output_verb.write(u"----------------------------------------------\n")
     output_verb.close()
+    return  verbs
     print("verbs: {}  ".format(len(verbs)))
 
 

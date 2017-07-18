@@ -125,8 +125,6 @@ class Distance_Calc(object):
 
 
     def calculate_distance(self, input_file, key1, key2):
-
-
         for i,j in enumerate(self.mylist):
             print(i,"--->",j)
         key1 = key1.lower()

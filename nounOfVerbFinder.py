@@ -7,6 +7,7 @@ import re
 import nltk
 from nltk.corpus import wordnet
 
+
 list_of_related_nouns = []
 
 

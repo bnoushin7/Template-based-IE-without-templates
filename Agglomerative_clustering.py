@@ -22,13 +22,17 @@ def agglomerative_clustering():
                   [0.5, 0.5], [2, 2], [2, 3], [3, 2], [3, 3]])
 
    # similarities = euclidean_distances(a)
-    distance_matrix = euclidean_distances(a)
+   # distance_matrix = euclidean_distances(a)
 
+    distance_matrix = [[0, 1, 2, 3],
+     [1, 0, 4, 5],
+     [2, 4, 0, 7],
+     [3, 5, 7, 0]]
 
-    Hclust = AgglomerativeClustering(n_clusters=5, affinity='precomputed', linkage='complete')
+    Hclust = AgglomerativeClustering(n_clusters=2, affinity='precomputed', linkage='complete')
     y = Hclust.fit_predict(distance_matrix)
-    z = y.children_
-    print(z)
+    #z = y.children_
+    print(y)
 
 
 agglomerative_clustering()
