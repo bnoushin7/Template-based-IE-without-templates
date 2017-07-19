@@ -4,10 +4,7 @@ Code that finds the noun for each Verb, the input of the noun_finder is the verb
 '''
 
 import re
-import nltk
 from nltk.corpus import wordnet
-
-
 list_of_related_nouns = []
 
 

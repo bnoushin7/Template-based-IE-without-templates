@@ -4,11 +4,9 @@ Code which indexes sentences and searches and makes distance matrix for each two
 '''
 
 import nltk,numpy as np
-from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 import math
 from collections import Counter
-
 
 class Distance_Calc(object):
     # text = "Ali arm hand tongue. Ali He good bad foot hand toe basketball. Ali arm ball goes"
