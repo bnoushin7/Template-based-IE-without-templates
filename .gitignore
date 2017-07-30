@@ -105,3 +105,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+test.test
+testkol.test
+test_file.txt
