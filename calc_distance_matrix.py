@@ -139,10 +139,13 @@ class Distance_Calc(object):
         #print(res)
         self.fill_pmi_matrix()
         #print("{}, {}, {}", len(self.mylist), np.shape(self.Cdist_matrix), np.shape(self.g_matrix))
-        return (res)
+        print(self.pmi_matrix)
+        return(self.pmi_matrix)
+        #return (res)
 
-ola = Distance_Calc("test_file.txt")
-out = ola.calculate_distance("test_file.txt", 'good', 'basketball')
+#ola = Distance_Calc("test_file.txt")
+#out = ola.calculate_distance("test_file.txt", 'good', 'basketball')
+
 #print('result is: {}'.format(out))
 #y = np.loadtxt("out_matrix.txt", dtype=int)
 #print(y)

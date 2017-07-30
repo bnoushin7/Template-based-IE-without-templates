@@ -4,6 +4,7 @@ Sample code for
 @author: Noushin
 '''
 
+import calc_distance_matrix
 
 def agCluster(distances, m):
     dm = {}
@@ -41,6 +42,20 @@ dists = [[0, 1, 6, 7],
          [6, 8, 0, 2],
          [7, 9, 2, 0]]
 
+
+
+ola = calc_distance_matrix.Distance_Calc("test_file.txt")
+out = ola.calculate_distance("test_file.txt", 'good', 'basketball')
+
+real_distance = ola.calculate_distance("test_file.txt", 'good', 'basketball')
+#real_distance = calc_distance_matrix.calculate_distance()
+
+'''
 clusters = agCluster(dists, 2)
+for cl in clusters:
+    print cl, " --- ", clusters[cl]
+'''
+
+clusters = agCluster(real_distance, 1)
 for cl in clusters:
     print cl, " --- ", clusters[cl]
