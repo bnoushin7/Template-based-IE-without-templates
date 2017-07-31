@@ -2,10 +2,15 @@
 __pycache__/
 *.py[cod]
 *$py.class
+agg_fllyn.py
+aggl.py
+test_italy.py
 
 # C extensions
 *.so
-
+*.txt
+*.xml
+*.conll
 .idea/
 dev-muc3-*
 out*
