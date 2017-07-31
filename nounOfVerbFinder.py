@@ -20,6 +20,7 @@ def noun_finder(verb_word):
     return list_of_related_nouns
 
 
+print noun_finder("explode")
 '''
 Sample calling
 print noun_finder("explode")

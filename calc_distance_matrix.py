@@ -38,6 +38,7 @@ class Distance_Calc(object):
                     self.word_sent[w].append(index)
                 else:
                     self.word_sent[w] = [index]
+        print(self.word_sent)
 
     def Gwi_wj(self,key1, key2):
         t = []
@@ -103,7 +104,7 @@ class Distance_Calc(object):
         return res
 
     def Pdist(self,wi, wj):
-        tmp =0
+       # tmp =0
         m = len(self.mylist)-1
         denom = sum(sum(self.Cdist_matrix[i][i - m:]) for i in xrange(m))
         #print("here: {}  {}" ,wi ,wj)
@@ -142,6 +143,9 @@ class Distance_Calc(object):
         print(self.pmi_matrix)
         return(self.pmi_matrix)
         #return (res)
+
+ola = Distance_Calc("test_orily")
+out = ola.calculate_distance("test_orily", 'have', 'sieze')
 
 #ola = Distance_Calc("test_file.txt")
 #out = ola.calculate_distance("test_file.txt", 'good', 'basketball')
