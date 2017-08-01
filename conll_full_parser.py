@@ -1,4 +1,18 @@
 
+
+def reverse_dictionary(first_fmt):
+    scnd_fmt = dict()
+    for key, value in first_fmt.items():
+        for item in value:
+            if item in scnd_fmt.keys():
+                scnd_fmt[item].append(key)
+            else:
+                scnd_fmt[item] = [key]
+
+    return scnd_fmt
+    print(scnd_fmt)
+
+
 def parse_full_conll(indata, out_dict):
     with open(indata, "r") as file:
         lines = file.readlines()
@@ -12,12 +26,9 @@ def parse_full_conll(indata, out_dict):
     main_dict = {}
     for line in lines:
         if not line.strip():
-            main_string = " ".join(verb_obj)
-            if not main_string.strip():
-                pass
-            else:
-                #main_dict[sentence_index] = str(" ".join(verb_obj))
-                main_dict[sentence_index] = " ".join(verb_obj)
+
+            if verb_obj:
+                main_dict[sentence_index] = verb_obj
             verb_dict_temp.clear()
             verb_obj = []
             sentence_index += 1
@@ -39,10 +50,13 @@ def parse_full_conll(indata, out_dict):
                     verb_obj.append(verb_of_obj + ":" + NER_type)
                 except:
                     pass
+
     output.write(str(main_dict))
     output.close()
-    print main_dict
-    return main_dict
+    correct_dict = reverse_dictionary(main_dict)
+    print(correct_dict)
+    return correct_dict
 
 #parse_full_conll("testkol.test","dict")
 parse_full_conll("dev-muc3-0001-0100.conll","dict")
+

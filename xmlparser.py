@@ -3,7 +3,7 @@ Created on 7/31/17
 Sample code for  
 @author: Noushin
 '''
-
+import re
 
 def testfunc(fileName):
     data = open(fileName).read()
@@ -12,7 +12,7 @@ def testfunc(fileName):
     dataList = []
 
     for x in data:
-        data = __import__('re').findall('<text>(.*?)</text>', x)
+        data = re.findall('<text>(.*?)</text>', x)
         data = (data[0], data[-1])
         dataList.append(data)
 
