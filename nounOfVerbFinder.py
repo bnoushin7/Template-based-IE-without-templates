@@ -1,5 +1,6 @@
 '''Created on 7/11/17
 Code that finds the noun for each Verb, the input of the noun_finder is the verb and it outputs its related nouns.
+It just works for lemma
 @author: Noushin
 '''
 
@@ -20,8 +21,9 @@ def noun_finder(verb_word):
     return list_of_related_nouns
 
 
-print noun_finder("explode")
+#print noun_finder("explode")
 '''
+it just works for lemma
 Sample calling
 print noun_finder("explode")
 or 

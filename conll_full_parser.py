@@ -1,4 +1,5 @@
 
+import nounOfVerbFinder
 
 def reverse_dictionary(first_fmt):
     scnd_fmt = dict()
@@ -40,6 +41,10 @@ def parse_full_conll(indata, out_dict):
             if line.strip().split("\t")[3] in verbs:
                 verb_dict_temp[int(word_index)] = lemma
                 verb_obj.append(lemma)
+                noun_list = nounOfVerbFinder.noun_finder(lemma)
+                verb_obj.extend(noun_list)
+                for ii in noun_list:
+                    print("nouns of {} is {}".format(lemma, ii))
 
             if line.strip().split("\t")[4] != "O" and line.strip().split("\t")[-1] == "dobj":
                 NER_type = line.strip().split("\t")[4]
