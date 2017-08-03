@@ -4,6 +4,7 @@ Sample code for
 @author: Noushin
 '''
 
+import conll_full_parser
 import calc_distance_matrix
 
 def agCluster(distances, m):
@@ -42,20 +43,28 @@ dists = [[0, 1, 6, 7],
          [6, 8, 0, 2],
          [7, 9, 2, 0]]
 
+(word_sent_dict, cntr) = conll_full_parser.parse_full_conll("dev-muc3-0001-0100.conll","dict")
 
+print("before ola\n")
 
+ola = calc_distance_matrix.Distance_Calc(word_sent_dict, cntr)
+print("between\n")
+real_distance = ola.calculate_distance()
+print("end\n")
+
+'''
 ola = calc_distance_matrix.Distance_Calc("test_file.txt")
 out = ola.calculate_distance("test_file.txt", 'good', 'basketball')
 
 real_distance = ola.calculate_distance("test_file.txt", 'good', 'basketball')
 #real_distance = calc_distance_matrix.calculate_distance()
-
+'''
 '''
 clusters = agCluster(dists, 2)
 for cl in clusters:
     print cl, " --- ", clusters[cl]
 '''
-
-clusters = agCluster(real_distance, 1)
+print("starting to real_distances")
+clusters = agCluster(real_distance, 40)
 for cl in clusters:
     print cl, " --- ", clusters[cl]

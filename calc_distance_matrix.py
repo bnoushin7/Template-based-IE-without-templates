@@ -13,16 +13,19 @@ class Distance_Calc(object):
 
 
 
-    def __init__(self,input_file):
-        self.word_sent = dict()
+    #def __init__(self,input_file, word_sent):
+    def __init__(self,  word_sent, cntr):
+        #self.word_sent = dict()
         self.mylist = list()
-        self.text = open(input_file).read()
+        #self.text = open(input_file).read()
         self.g_matrix = None#np.zeros((1,1))
         self.Cdist_matrix = None#np.zeros((1, 1))
         self.pmi_matrix = None  # np.zeros((1, 1))
-
+        self.word_sent = word_sent
+        self.cntr = cntr
+    '''
     def sentence_indexing(self, input_file):
-
+    
         sents = nltk.sent_tokenize(self.text)
         allwords = nltk.word_tokenize(self.text)
         stop_words = set(stopwords.words('english'))
@@ -39,7 +42,7 @@ class Distance_Calc(object):
                 else:
                     self.word_sent[w] = [index]
         print(self.word_sent)
-
+    '''
     def Gwi_wj(self,key1, key2):
         t = []
         res = 0
@@ -96,12 +99,19 @@ class Distance_Calc(object):
 
 
     def P_word(self, in_word):
-
+        word_cnt = len(self.word_sent[in_word])
+        denominator = self.cntr
+        res = float(word_cnt) / denominator
+        return res
+        '''
         cntr = Counter(self.text.lower().split())
         word_cnt = cntr[in_word.lower()]
         denominator = sum(cntr.values())
         res = float(word_cnt) / denominator
         return res
+        '''
+
+
 
     def Pdist(self,wi, wj):
        # tmp =0
@@ -111,32 +121,36 @@ class Distance_Calc(object):
         wi_index = self.mylist.index(wi)
         wj_index = self.mylist.index(wj)
         #print (self.mylist)
-        print("i ind {} j ind{}".format(wi_index ,wj_index))
+        #print("i ind {} j ind{}".format(wi_index ,wj_index)) # mohem
         res =float(self.Cdist_matrix[wi_index][wj_index])/denom
         return res
 
     def pmi(self, wi, wj):
-        denom = self.P_word(wi.lower()) * self.P_word(wj.lower())
-        print("denom is {} wi  {}   wj {} ".format(denom, wi, wj))
+        denom = self.P_word(wi) * self.P_word(wj)
+        #print("denom is {} wi  {}   wj {} ".format(denom, wi, wj))
         res = float(self.Pdist(wi, wj))/denom
         return res
 
 
 
-    def calculate_distance(self, input_file, key1, key2):
+    #def calculate_distance(self, input_file, key1, key2):
+    def calculate_distance(self):
+        '''
         for i,j in enumerate(self.mylist):
             print(i,"--->",j)
         key1 = key1.lower()
         key2 = key2.lower()
-        self.sentence_indexing(input_file)
+        #self.sentence_indexing(input_file)
         self.Gwi_wj(key1, key2)
         self.C_dist(key1, key2)
         #print(res)
+        '''
         self.fill_G_matrix()
+        print("g_matrix\n {}".format(self.g_matrix))
         self.fill_Cdist_matrix()
-        #print(self.Cdist_matrix)
 
-        res = self.pmi(key1,key2)
+
+        #res = self.pmi(key1,key2)
         #print(res)
         self.fill_pmi_matrix()
         #print("{}, {}, {}", len(self.mylist), np.shape(self.Cdist_matrix), np.shape(self.g_matrix))
@@ -144,8 +158,7 @@ class Distance_Calc(object):
         return(self.pmi_matrix)
         #return (res)
 
-ola = Distance_Calc("test_orily")
-out = ola.calculate_distance("test_orily", 'have', 'sieze')
+
 
 #ola = Distance_Calc("test_file.txt")
 #out = ola.calculate_distance("test_file.txt", 'good', 'basketball')
