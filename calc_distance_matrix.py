@@ -52,12 +52,12 @@ class Distance_Calc(object):
             for e in range(len(l2)):
                 t.append(abs(l1[b] - l2[e]) + 1)
                 res = min(t)
-        return (res)
 
 
     def C_dist(self, wi, wj):
-        res = (1 - math.log(self.Gwi_wj(wi,wj), 4))
-        return res
+        #res = (1 - math.log(self.Gwi_wj(wi,wj), 4))
+        res = (1 - math.log(self.Gwi_wj(wi, wj), 4))
+        return (max(res, 0.05))
 
 
 
