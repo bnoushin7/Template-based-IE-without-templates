@@ -21,4 +21,4 @@ def testfunc(fileName):
 
 if __name__ == "__main__":
     #fileName = __import__('sys').argv[1]
-    print testfunc("atom.xml")
+    print testfunc("sahar.xml")

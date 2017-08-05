@@ -57,7 +57,7 @@ class Distance_Calc(object):
     def C_dist(self, wi, wj):
         #res = (1 - math.log(self.Gwi_wj(wi,wj), 4))
         res = (1 - math.log(self.Gwi_wj(wi, wj), 4))
-        return (max(res, 0.05))
+        return (max(res, 0.05)) ## same as line 1364 in CountTokenPair.java of Java implementation
 
 
 
