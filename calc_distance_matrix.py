@@ -11,38 +11,14 @@ from collections import Counter
 class Distance_Calc(object):
     # text = "Ali arm hand tongue. Ali He good bad foot hand toe basketball. Ali arm ball goes"
 
-
-
-    #def __init__(self,input_file, word_sent):
     def __init__(self,  word_sent, cntr):
-        #self.word_sent = dict()
         self.mylist = list()
-        #self.text = open(input_file).read()
-        self.g_matrix = None#np.zeros((1,1))
-        self.Cdist_matrix = None#np.zeros((1, 1))
-        self.pmi_matrix = None  # np.zeros((1, 1))
+        self.g_matrix = None
+        self.Cdist_matrix = None
+        self.pmi_matrix = None
         self.word_sent = word_sent
         self.cntr = cntr
-    '''
-    def sentence_indexing(self, input_file):
-    
-        sents = nltk.sent_tokenize(self.text)
-        allwords = nltk.word_tokenize(self.text)
-        stop_words = set(stopwords.words('english'))
-        filtered_words = [w for w in allwords if not w in stop_words]
-        while "." in filtered_words: filtered_words.remove(".")
-        print(filtered_words)
-        index = 0
-        for s in sents:
-            index += 1
-            #for w in nltk.word_tokenize(s):
-            for w in filtered_words:
-                if w in self.word_sent:
-                    self.word_sent[w].append(index)
-                else:
-                    self.word_sent[w] = [index]
-        print(self.word_sent)
-    '''
+
     def Gwi_wj(self,key1, key2):
         t = []
         res = 0
@@ -51,16 +27,13 @@ class Distance_Calc(object):
         for b in range(len(l1)):
             for e in range(len(l2)):
                 t.append(abs(l1[b] - l2[e]) + 1)
-                res = min(t)
+        res = min(t)
+        return res
 
 
     def C_dist(self, wi, wj):
-        #res = (1 - math.log(self.Gwi_wj(wi,wj), 4))
-        res = (1 - math.log(self.Gwi_wj(wi, wj), 4))
+        res = (1 - math.log(self.Gwi_wj(wi,wj), 4))
         return (max(res, 0.05)) ## same as line 1364 in CountTokenPair.java of Java implementation
-
-
-
 
 
     def fill_G_matrix(self):
@@ -157,6 +130,9 @@ class Distance_Calc(object):
         print(self.pmi_matrix)
         return(self.pmi_matrix)
         #return (res)
+
+
+
 
 
 

@@ -45,11 +45,10 @@ dists = [[0, 1, 6, 7],
 
 (word_sent_dict, cntr) = conll_full_parser.parse_full_conll("dev-muc3-0001-0100.conll","dict")
 
-print("before ola\n")
-
 ola = calc_distance_matrix.Distance_Calc(word_sent_dict, cntr)
 print("between\n")
 real_distance = ola.calculate_distance()
+
 print("end\n")
 
 '''
@@ -65,6 +64,6 @@ for cl in clusters:
     print cl, " --- ", clusters[cl]
 '''
 print("starting to real_distances")
-clusters = agCluster(real_distance, 40)
+clusters = agCluster(real_distance, 1)
 for cl in clusters:
     print cl, " --- ", clusters[cl]
