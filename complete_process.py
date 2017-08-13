@@ -5,6 +5,7 @@ Sample code for
 '''
 
 import verb_detection
+import numpy
 import calc_distance_matrix
 import nounOfVerbFinder
 import nltk,numpy as np
@@ -41,20 +42,26 @@ class data_preprocessing():
         filtered_words = [w for w in allwords if not w in stop_words]
         while "." in filtered_words: filtered_words.remove(".")
         print(filtered_words)
+        filtered_words = numpy.unique(filtered_words)
+        word_sent = dict()
         index = 0
         for s in sents:
             index += 1
             #for w in nltk.word_tokenize(s):
             for w in filtered_words:
-                if w in self.word_sent:
-                    self.word_sent[w].append(index)
-                else:
-                    self.word_sent[w] = [index]
+                if w in nltk.word_tokenize(s):
+                    if w in word_sent:
+                        word_sent[w].append(index)
+                    else:
+                        word_sent[w] = [index]
 
 
 
 
-#POS and exract verbs, add it to the dictionary with list of sentence index
+
+
+
+                    #POS and exract verbs, add it to the dictionary with list of sentence index
 
     verbs = verb_detection()
 
