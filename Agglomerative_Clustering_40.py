@@ -12,7 +12,8 @@ import scipy.cluster.hierarchy as sch
 
 vectors = np.random.normal([1, 0.5],
                            size=[10, 2])  # vectors of 1000  random two dimensional points from normal distribution
-#print(vectors)
+for ii in range(0,10):
+    print("{} {}".format(ii, vectors[ii]))
 N = vectors.shape[0]  # vector number
 
 distance_matrix = cosine_distances(vectors)  # distance matrix calcualtion based on cosine similarity
@@ -41,4 +42,7 @@ clusters_labels_count = Counter(y)  # final clusters labels with their sizes (ha
 for i in range(n_clusters):
     cluster1_vectors_index = np.where(y == i+1)
     print(cluster1_vectors_index[0])
+    for j in (cluster1_vectors_index[0]):
+        print(vectors[j])
+       # print(vectors[cluster1_vectors_index[j])
 
