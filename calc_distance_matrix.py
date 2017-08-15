@@ -129,7 +129,7 @@ class Distance_Calc(object):
         #print("{}, {}, {}", len(self.mylist), np.shape(self.Cdist_matrix), np.shape(self.g_matrix))
         print(self.pmi_matrix)
         return(self.pmi_matrix)
-        #return (res)
+
 
 
 
