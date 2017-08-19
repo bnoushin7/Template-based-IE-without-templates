@@ -8,7 +8,7 @@ Sample code for clustering with the condition that each cluster contains at most
 from sklearn.metrics.pairwise import cosine_distances
 import numpy as np
 from collections import Counter
-import scipy.cluster.hierarchy as sch
+import scipy.cluster.hierarchy as schzzzz
 
 vectors = np.random.normal([1, 0.5],
                            size=[10, 2])  # vectors of 1000  random two dimensional points from normal distribution

@@ -83,5 +83,5 @@ def parse_full_conll(indata, out_dict):
 
 
 # parse_full_conll("testkol.test","dict")
-parse_full_conll("dev-muc3-0001-0100.conll", "dict")
+parse_full_conll("dev-muc3-0001-0100.conll_bk", "dict")
 
