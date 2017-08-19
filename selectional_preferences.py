@@ -4,89 +4,106 @@ Sample code for
 @author: Noushin
 '''
 
-class Line:
-  def __init__(self, wordIndex, token, lemma, POS, NER, head, depRel):
-      self.wordIndex = wordIndex
-      self.token = token
-      self.lemma =lemma
-      self.POS = POS
-      self.NER = NER
-      self.head = head
-      self.depRel = depRel
-
-
 
 def selectional_preferencer(indata, out_dict):
     with open(indata, "r") as file:
         lines = file.readlines()
-    output = open('{0}_output.txt'.format(out_dict), 'w')
-
+    lines = lines + ['\n']
     verbs = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
     subjects = set(["nsubj", "nsubjpass", "csubj", "csubjpass"])
-    sentence_index = 1
+    sentence_index = 0
     verb_dict_temp = {}
     verb_obj = []
     main_dict = {}
-    for line in lines:
-        if not line.strip():
 
+    block_counter = 0
+
+    for c, line in enumerate(lines):
+        line = line.strip()
+
+        #if the line is empty, clear verb_obj and verb_dict_temp
+        if not line:
             if verb_obj:
                 main_dict[sentence_index] = verb_obj
             verb_dict_temp.clear()
             verb_obj = []
             sentence_index += 1
-            continue
+            block_counter = c
+
+
         else:
 
-            word_index = line.strip().split("\t")[0]
-            lemma = line.strip().split("\t")[2]
-            if line.strip().split("\t")[3] in verbs:
-                verb_dict_temp[int(word_index)] = lemma
-                # verb_obj.append(lemma+": verb")
-            if line.strip().split("\t")[-1] == "dobj":
-                if line.strip().split("\t")[4] == "O" and line.strip().split("\t")[3] != "PRP":
-                    dobj = line.strip().split("\t")[1]
-                    index_v = int(line.strip().split("\t")[-2])
+            linearr = line.split("\t")
+
+            wordIndex = linearr[0]
+            token = linearr[1]
+            lemma = linearr[2]
+            POS = linearr[3]
+            NER = linearr[4]
+            head = linearr[5]
+            depRel = linearr[6]
+
+            if POS in verbs:
+                verb_dict_temp[int(wordIndex)] = lemma
+
+            isObject = False
+            isSubject = False
+            isNER = False
+
+            if depRel == "dobj":
+                isObject = True
+
+            if depRel in subjects:
+                isSubject = True
+
+            if NER != "O":
+                isNER = True
+
+
+            if isObject or isSubject:
+                if POS != "PRP":
+                    index_v = int(head)
+                    verb_of_obj = None
+
                     try:
                         verb_of_obj = verb_dict_temp[index_v]
-                        verb_obj.append(verb_of_obj + ": object : " + dobj)
-                    except:  # since sometimes the index does not exist in verb dictionary
-                        pass
 
-                elif line.strip().split("\t")[4] != "O":
-                    NER_type = line.strip().split("\t")[4]
-                    index_ner = int(line.strip().split("\t")[-2])
-                    try:
-                        verb_of_obj = verb_dict_temp[index_ner]
-                        # verb_obj.append(str(verb_of_obj + ":" + NER_type))
-                        verb_obj.append(verb_of_obj + ":" + NER_type)
-                    except:
-                        pass
+                    except KeyError:
+                        print("this key doesn't exist:", index_v)
 
-            if line.strip().split("\t")[-1] in subjects:
-                if line.strip().split("\t")[4] == "O" and line.strip().split("\t")[3] != "PRP":
-                    dobj = line.strip().split("\t")[1]
-                    index_v = int(line.strip().split("\t")[-2])
-                    try:
-                        verb_of_obj = verb_dict_temp[index_v]
-                        verb_obj.append(verb_of_obj + ": subject : " + dobj)
-                    except:  # since sometimes the index does not exist in verb dictionary
-                        pass
+                        print("looking for line:", index_v)
+                        bc = -1 if block_counter == 0 else block_counter
+                        nline = lines[bc + index_v]
+                        nlinearr = nline.split("\t")
+                        nwordIndex = nlinearr[0]
+                        nlemma = nlinearr[2]
+                        #print("new entry:", nwordIndex, nlemma)
+                        verb_dict_temp[int(nwordIndex)] = nlemma
+                        if nlinearr[3] in verbs:
+                            verb_of_obj = verb_dict_temp[index_v]
 
-                elif line.strip().split("\t")[4] != "O":
-                    NER_type = line.strip().split("\t")[4]
-                    index_ner = int(line.strip().split("\t")[-2])
-                    try:
-                        verb_of_obj = verb_dict_temp[index_ner]
-                        # verb_obj.append(str(verb_of_obj + ":" + NER_type))
-                        verb_obj.append(verb_of_obj + ":" + NER_type)
-                    except:
-                        pass
+                    if verb_of_obj is not None:
 
-    output.write(str(main_dict))
-    output.close()
+                        if isNER:
+                            NER_type = NER
+
+                        if isSubject and isNER:
+                            verb_obj.append(verb_of_obj + ": subject : " + NER_type)
+
+                        if isSubject and not isNER:
+                            verb_obj.append(verb_of_obj + ": subject : " + token)
+
+                        if isObject and not isNER:
+                            verb_obj.append(verb_of_obj + ": object : " + token)
+
+                        if isObject and isNER:
+                            verb_obj.append(verb_of_obj + ": object : " + NER_type)
+
+    with open('{0}_output.txt'.format(out_dict), 'w') as output:
+        output.write(str(main_dict))
+        output.close()
     return (main_dict)
 
 
-selectional_preferencer("simple_test.conll", "select")
-
+selectional_preferencer("simple_test.conll", "selectt")
+# selectional_preferencer("dev-muc3-0001-0100.conll_bk", "select_pe")
