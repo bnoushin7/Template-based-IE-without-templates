@@ -14,7 +14,8 @@ def selectional_preferencer(indata, out_dict):
     sentence_index = 0
     verb_dict_temp = {}
     verb_obj = []
-    main_dict = {}
+    #main_dict = {}
+    main_list = []
 
     block_counter = 0
 
@@ -23,8 +24,9 @@ def selectional_preferencer(indata, out_dict):
 
         #if the line is empty, clear verb_obj and verb_dict_temp
         if not line:
-            if verb_obj:
-                main_dict[sentence_index] = verb_obj
+            #if verb_obj:
+            #main_dict[sentence_index] = verb_obj
+            main_list.extend(verb_obj)
             verb_dict_temp.clear()
             verb_obj = []
             sentence_index += 1
@@ -100,10 +102,11 @@ def selectional_preferencer(indata, out_dict):
                             verb_obj.append(verb_of_obj + ": object : " + NER_type)
 
     with open('{0}_output.txt'.format(out_dict), 'w') as output:
-        output.write(str(main_dict))
+        output.write(str(main_list))
+
         output.close()
-    return (main_dict)
+    return (main_list)
 
 
-selectional_preferencer("simple_test.conll", "selectt")
-# selectional_preferencer("dev-muc3-0001-0100.conll_bk", "select_pe")
+#selectional_preferencer("simple_test.conll", "selectt")
+selectional_preferencer("dev-muc3-0001-0100.conll_bk", "select_pe")
