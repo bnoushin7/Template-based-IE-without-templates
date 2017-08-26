@@ -4,6 +4,7 @@ It just works for lemma
 @author: Noushin
 '''
 
+
 import re
 from nltk.corpus import wordnet
 list_of_related_nouns = []

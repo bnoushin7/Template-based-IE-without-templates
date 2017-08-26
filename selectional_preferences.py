@@ -3,6 +3,9 @@ Created on 8/17/17
 Sample code for
 @author: Noushin
 '''
+from collections import Counter
+
+from nltk.chunk.named_entity import NEChunkParser
 
 
 def selectional_preferencer(indata, out_dict):
@@ -10,12 +13,18 @@ def selectional_preferencer(indata, out_dict):
         lines = file.readlines()
     lines = lines + ['\n']
     verbs = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
+    Nouns = set(["NN" ,"NNP", "NNS", "NNPS"])
     subjects = set(["nsubj", "nsubjpass", "csubj", "csubjpass"])
     sentence_index = 0
     verb_dict_temp = {}
+    new_dict = {}
     verb_obj = []
     #main_dict = {}
     main_list = []
+    cnt1 = 0
+    cnt2 = 0
+    cnt3 = 0
+    cnt4 = 0
 
     block_counter = 0
 
@@ -26,9 +35,9 @@ def selectional_preferencer(indata, out_dict):
         if not line:
             #if verb_obj:
             #main_dict[sentence_index] = verb_obj
-            main_list.extend(verb_obj)
+            ##main_list.extend(verb_obj)
             verb_dict_temp.clear()
-            verb_obj = []
+            ##verb_obj = []
             sentence_index += 1
             block_counter = c
 
@@ -63,7 +72,7 @@ def selectional_preferencer(indata, out_dict):
 
 
             if isObject or isSubject:
-                if POS != "PRP":
+                if POS != "PRP" and POS !="DT" and POS !="WDT" and POS in Nouns:
                     index_v = int(head)
                     verb_of_obj = None
 
@@ -71,9 +80,9 @@ def selectional_preferencer(indata, out_dict):
                         verb_of_obj = verb_dict_temp[index_v]
 
                     except KeyError:
-                        print("this key doesn't exist:", index_v)
+                        ##print("this key doesn't exist:", index_v)
 
-                        print("looking for line:", index_v)
+                        ##print("looking for line:", index_v)
                         bc = -1 if block_counter == 0 else block_counter
                         nline = lines[bc + index_v]
                         nlinearr = nline.split("\t")
@@ -90,23 +99,56 @@ def selectional_preferencer(indata, out_dict):
                             NER_type = NER
 
                         if isSubject and isNER:
-                            verb_obj.append(verb_of_obj + ": subject : " + NER_type)
+                            previous_key = verb_of_obj + "-subject"
+                            if previous_key in new_dict:
+                                #new_dict[previous_key].append(NER_type)
+                                new_dict[previous_key].append((NER_type, NER_type))
+                            else:
+                                #new_dict[previous_key] = [NER_type]
+                                new_dict[previous_key] = [(NER_type, NER_type)]
 
+                        
                         if isSubject and not isNER:
-                            verb_obj.append(verb_of_obj + ": subject : " + token)
+                            previous_key = verb_of_obj + "-subject"
+                            if previous_key in new_dict:
+                                #new_dict[previous_key].append(token)
+                                new_dict[previous_key].append((token,"OTHER"))
+                            else:
+                                #new_dict[previous_key] = [token]
+                                new_dict[previous_key] = [(token,"OTHER")]
 
                         if isObject and not isNER:
-                            verb_obj.append(verb_of_obj + ": object : " + token)
+                            previous_key = verb_of_obj + "-object"
+                            if previous_key in new_dict:
+                                #new_dict[previous_key].append(token)
+                                new_dict[previous_key].append((token,"OTHER"))
+                            else:
+                                #new_dict[previous_key] = [token]
+                                new_dict[previous_key] = [(token,"OTHER")]
 
                         if isObject and isNER:
-                            verb_obj.append(verb_of_obj + ": object : " + NER_type)
+                            previous_key = verb_of_obj + "-object"
+                            if previous_key in new_dict:
+                                #new_dict[previous_key].append(NER_type)
+                                new_dict[previous_key].append((NER_type, NER_type))
+                            else:
+                                #new_dict[previous_key] = [NER_type]
+                                new_dict[previous_key] = [(NER_type, NER_type)]
+
+
+
+    my_dict = {k:Counter(v) for k,v in new_dict.iteritems()}
+    print(my_dict)
+    #print(my_dict['eat-object']['apple'])
+
+
 
     with open('{0}_output.txt'.format(out_dict), 'w') as output:
-        output.write(str(main_list))
+        output.write(str(my_dict))
 
         output.close()
-    return (main_list)
+    return (my_dict)
 
 
-#selectional_preferencer("simple_test.conll", "selectt")
+#selectional_preferencer("simple_test.conll", "selec")
 selectional_preferencer("dev-muc3-0001-0100.conll_bk", "select_pe")
