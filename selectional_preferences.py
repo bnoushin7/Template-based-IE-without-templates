@@ -140,6 +140,9 @@ def selectional_preferencer(indata, out_dict):
     my_dict = {k:Counter(v) for k,v in new_dict.iteritems()}
     print(my_dict)
     #print(my_dict['eat-object']['apple'])
+    print("----------------EEEEEE----------------------------")
+    #print(my_dict['grant-object'][('status', 'OTHER')])
+    print("------------------EEEEE--------------------------")
 
 
 
@@ -147,8 +150,32 @@ def selectional_preferencer(indata, out_dict):
         output.write(str(my_dict))
 
         output.close()
+
+    uniques_list = list(set(vals for values in my_dict.values() for vals in values))
+    print(uniques_list)
+
+
+    indexing_dict = {val:idx for idx,val in enumerate(uniques_list)}
+    print(indexing_dict)
+
+
+
+    final_dict = {}
+    vec_length = len(uniques_list)
+    for i in my_dict.iterkeys():
+        final_dict[i] = [0] * vec_length
+        print(type(final_dict[i]))
+        val_list = my_dict[i]
+
+        for j in val_list.iterkeys():
+            val_index = indexing_dict[j]
+            final_dict[i][val_index] = my_dict[i][j]
+
+    print(final_dict)
+
     return (my_dict)
 
 
 #selectional_preferencer("simple_test.conll", "selec")
 selectional_preferencer("dev-muc3-0001-0100.conll_bk", "select_pe")
+print("Done")
