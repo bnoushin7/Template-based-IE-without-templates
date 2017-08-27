@@ -15,6 +15,7 @@ def selectional_preferencer(indata, out_dict):
     verbs = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
     Nouns = set(["NN" ,"NNP", "NNS", "NNPS"])
     subjects = set(["nsubj", "nsubjpass", "csubj", "csubjpass"])
+    objects = set(["dobj", "iobj"])
     sentence_index = 0
     verb_dict_temp = {}
     new_dict = {}
@@ -61,7 +62,8 @@ def selectional_preferencer(indata, out_dict):
             isSubject = False
             isNER = False
 
-            if depRel == "dobj":
+            #if depRel == "dobj":
+            if depRel in objects:
                 isObject = True
 
             if depRel in subjects:
@@ -112,19 +114,19 @@ def selectional_preferencer(indata, out_dict):
                             previous_key = verb_of_obj + "-subject"
                             if previous_key in new_dict:
                                 #new_dict[previous_key].append(token)
-                                new_dict[previous_key].append((token,"OTHER"))
+                                new_dict[previous_key].append((lemma,"OTHER"))
                             else:
                                 #new_dict[previous_key] = [token]
-                                new_dict[previous_key] = [(token,"OTHER")]
+                                new_dict[previous_key] = [(lemma,"OTHER")]
 
                         if isObject and not isNER:
                             previous_key = verb_of_obj + "-object"
                             if previous_key in new_dict:
                                 #new_dict[previous_key].append(token)
-                                new_dict[previous_key].append((token,"OTHER"))
+                                new_dict[previous_key].append((lemma,"OTHER"))
                             else:
                                 #new_dict[previous_key] = [token]
-                                new_dict[previous_key] = [(token,"OTHER")]
+                                new_dict[previous_key] = [(lemma,"OTHER")]
 
                         if isObject and isNER:
                             previous_key = verb_of_obj + "-object"
@@ -138,7 +140,7 @@ def selectional_preferencer(indata, out_dict):
 
 
     my_dict = {k:Counter(v) for k,v in new_dict.iteritems()}
-    print(my_dict)
+    #print(my_dict)
     #print(my_dict['eat-object']['apple'])
     print("----------------EEEEEE----------------------------")
     #print(my_dict['grant-object'][('status', 'OTHER')])
@@ -152,11 +154,27 @@ def selectional_preferencer(indata, out_dict):
         output.close()
 
     uniques_list = list(set(vals for values in my_dict.values() for vals in values))
-    print(uniques_list)
+    #print(uniques_list)
+
 
 
     indexing_dict = {val:idx for idx,val in enumerate(uniques_list)}
-    print(indexing_dict)
+    person_list = filter(lambda i: i[1] == 'PERSON', uniques_list)
+    organization_list = filter(lambda i: i[1] == 'ORGANIZATION', uniques_list)
+    other_list = filter(lambda i: i[1] == 'OTHER', uniques_list)
+    location_list = filter(lambda i: i[1] == 'LOCATION', uniques_list)
+
+    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    print(person_list)
+    print("%%%%%%%%%")
+    print(other_list)
+    print("%%%%%%%%%")
+    print(organization_list)
+    print("%%%%%%%%%")
+    print(location_list)
+    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+
+    #print(indexing_dict)
 
 
 
@@ -164,18 +182,18 @@ def selectional_preferencer(indata, out_dict):
     vec_length = len(uniques_list)
     for i in my_dict.iterkeys():
         final_dict[i] = [0] * vec_length
-        print(type(final_dict[i]))
         val_list = my_dict[i]
 
         for j in val_list.iterkeys():
             val_index = indexing_dict[j]
             final_dict[i][val_index] = my_dict[i][j]
 
-    print(final_dict)
+    #print(final_dict)
+
 
     return (my_dict)
 
 
 #selectional_preferencer("simple_test.conll", "selec")
 selectional_preferencer("dev-muc3-0001-0100.conll_bk", "select_pe")
-print("Done")
+print("lis")
