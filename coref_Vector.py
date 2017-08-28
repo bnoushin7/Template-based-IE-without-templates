@@ -159,13 +159,15 @@ def returnCorefVectors(allFilesSentences, allFilesCoreferences, allFilesSentence
                     vectors[s1] = v
     print vectors
 
-    feat_vect = vectors.keys()
-    vec_length = len(feat_vect)
-    final_dict = {}
+    feat_vect = vectors.keys() #list of all syntact relations
+    vec_length = len(feat_vect) #we wan our features vector be this size
+    final_dict = {} # This is the dictionary, with each syntactic relation as its keys and the feature_vector for each key, as its value
 
-    indexing_dict =  {val:idx for idx,val in enumerate(feat_vect)}
+    indexing_dict =  {val:idx for idx,val in enumerate(feat_vect)} # I have used this dictionary to know the index of each syntactic relations in the list to be
+                                                                   # able toaccesseach element count later.
 
-    for i in vectors.iterkeys():
+
+    for i in vectors.iterkeys(): # Here I try to to find the number of occurance of each related syntactic relation using indexing_dict
         final_dict[i] = [0] * vec_length
         val_dict = vectors[i]
 
@@ -174,13 +176,7 @@ def returnCorefVectors(allFilesSentences, allFilesCoreferences, allFilesSentence
             final_dict[i][idx] = vectors[i][j]
 
 
-
-
-
-
-
-
-    return vectors
+    return vectors # I am not sure what to return, maybe we need to retrn final_dict too?
 
 
 
