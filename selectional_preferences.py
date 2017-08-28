@@ -159,10 +159,11 @@ def selectional_preferencer(indata, out_dict):
 
 
     indexing_dict = {val:idx for idx,val in enumerate(uniques_list)}
-    person_list = filter(lambda i: i[1] == 'PERSON', uniques_list)
-    organization_list = filter(lambda i: i[1] == 'ORGANIZATION', uniques_list)
-    other_list = filter(lambda i: i[1] == 'OTHER', uniques_list)
-    location_list = filter(lambda i: i[1] == 'LOCATION', uniques_list)
+    person_list = [first for first, second in uniques_list if second == "PERSON"]
+
+    organization_list = [first for first, second in uniques_list if second == "ORGANIZATION"]
+    other_list = [first for first, second in uniques_list if second == "OTHER"]
+    location_list = [first for first, second in uniques_list if second == "LOCATION"]
 
     print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
     print(person_list)

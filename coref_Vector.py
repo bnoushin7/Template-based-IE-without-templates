@@ -158,7 +158,30 @@ def returnCorefVectors(allFilesSentences, allFilesCoreferences, allFilesSentence
                             v[s2] = 1
                     vectors[s1] = v
     print vectors
+
+    feat_vect = vectors.keys()
+    vec_length = len(feat_vect)
+    final_dict = {}
+
+    indexing_dict =  {val:idx for idx,val in enumerate(feat_vect)}
+
+    for i in vectors.iterkeys():
+        final_dict[i] = [0] * vec_length
+        val_dict = vectors[i]
+
+        for j in val_dict.iterkeys():
+            idx = indexing_dict[j]
+            final_dict[i][idx] = vectors[i][j]
+
+
+
+
+
+
+
+
     return vectors
+
 
 
 
