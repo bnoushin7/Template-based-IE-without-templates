@@ -12,10 +12,11 @@ def main():
     else:
         address = None
 
-    (word_sent_dict, cntr) = conll_full_parser.parse_full_conll("dev-muc3-0001-0100.conll", "dict")
-    ola = distance_matrix_calculation.Distance_Calc(word_sent_dict, cntr)
-    real_distance = ola.calculate_distance()
-    clustering(real_distance)
+    for file in __import__('os').listdir(address):
+        (word_sent_dict, cntr) = conll_full_parser.parse_full_conll(file, file)
+        ola = distance_matrix_calculation.Distance_Calc(word_sent_dict, cntr)
+        real_distance = ola.calculate_distance()
+        clustering(real_distance)
 
 def clustering(distance_matrix):
     N = distance_matrix.shape[0]  # vector number

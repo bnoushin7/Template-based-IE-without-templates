@@ -18,7 +18,7 @@ def parse_full_conll(indata, out_dict):
     cnt = 0
     with open(indata, "r") as file:
         lines = file.readlines()
-    output = open('{0}_output.txt'.format(out_dict), 'w')
+    output = open('output_{0}.txt'.format(out_dict), 'w')
 
     # VB VBD VBG VBN VBP VBZ
     verbs = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
