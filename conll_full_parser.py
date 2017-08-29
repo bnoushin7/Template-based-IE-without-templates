@@ -78,7 +78,7 @@ def parse_full_conll(indata, out_dict):
     correct_dict = reverse_dictionary(main_dict)
     output.write(str(correct_dict))
     output.close()
-    #print(correct_dict)
+    print(correct_dict)
     return (correct_dict, cnt)
 
 
