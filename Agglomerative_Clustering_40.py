@@ -3,24 +3,32 @@ import numpy as np
 from collections import Counter
 import scipy.cluster.hierarchy as sch
 import distance_matrix_calculation
+from distance_matrix_calculation import *
 import conll_full_parser
 import sys
 
+
 def main():
+    '''
+
     if len(sys.argv) > 1 :
         address = sys.argv[1]
     else:
         address = None
 
+
     for file in __import__('os').listdir(address):
-        (word_sent_dict, cntr) = conll_full_parser.parse_full_conll(file, file)
-        ola = distance_matrix_calculation.Distance_Calc(word_sent_dict, cntr)
-        real_distance = ola.calculate_distance()
-        clustering(real_distance)
+    '''
+    #(word_sent_dict, cntr) = conll_full_parser.parse_full_conll(file, file)
+    (word_sent_dict, cntr) = conll_full_parser.parse_full_conll("/home/noushin/summerTask/dev-muc3-0001-0100.conll",
+                                                                "dev-muc3-0001-0100")
+    ola = distance_matrix_calculation.Distance_Calc(word_sent_dict, cntr)
+    real_distance = ola.calculate_distance()
+    clustering(real_distance, ola)
 
-def clustering(distance_matrix):
+
+def clustering(distance_matrix, dist_obj):
     N = distance_matrix.shape[0]  # vector number
-
     # distance_matrix = cosine_distances(vectors)  # distance matrix calcualtion based on cosine similarity
 
 
@@ -41,16 +49,24 @@ def clustering(distance_matrix):
 
     clusters_labels_count = Counter(y)  # final clusters labels with their sizes (having at most 40 members)
 
-
+    the_list = dist_obj.mylist
     for i in range(n_clusters):
         cluster1_vectors_index = np.where(y == i+ 1)
-        print(cluster1_vectors_index[0])
-        '''
-        
+        cluster1_vectors_events = list()
+        for j in range(len(cluster1_vectors_index[0])):
+            idx = cluster1_vectors_index[0][j]
+            cluster1_vectors_events.append(the_list[idx])
+        print(i,cluster1_vectors_events )
+
+    print("done")
+    #print(the_list)
+
+    '''
         for j in (cluster1_vectors_index[0]):
             print(vectors[j])
             print(vectors[cluster1_vectors_index][j])
-        '''
+    '''
+
 
 
 if __name__ == "__main__":

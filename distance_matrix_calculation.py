@@ -15,6 +15,7 @@ class Distance_Calc(object):
         self.word_sent = word_sent
         self.cntr = cntr
 
+
     def Gwi_wj(self, key1, key2):
         t = []
         res = 0
@@ -98,4 +99,8 @@ class Distance_Calc(object):
         return (self.pmi_matrix)
 
 
+    def reverse_dictionary_events(self, idx):
+        indexing_dict = {val: idx for idx, val in enumerate(self.mylist)}
+        evnt = indexing_dict[idx]
+        return evnt
 
