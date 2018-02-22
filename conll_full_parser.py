@@ -34,6 +34,9 @@ def parse_full_conll(indata, out_dict):
             verb_dict_temp.clear()
             verb_obj = []
             sentence_index += 1
+            if sentence_index % 1000 == 1:
+                print(sentence_index)
+
             continue
         else:
 
@@ -83,8 +86,7 @@ def parse_full_conll(indata, out_dict):
 
 
 
-
-
-# parse_full_conll("testkol.test","dict")
-#parse_full_conll("dev-muc3-0001-0100.conll_bk", "dict")
+#parse_full_conll("testkol.test","dict")
+parse_full_conll("dev-muc3-0001-0100.conll", "dict")
+#parse_full_conll("file_name_outputs", "real_dict")
 
