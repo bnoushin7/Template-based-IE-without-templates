@@ -186,6 +186,70 @@ vectors = [np.array(f) for f in [[0, 1], [0, 2], [0, 5], [11, 0], [30, 0], [34, 
 dist_matrix = cosine_distances(vectors)
 final_clusters = run_clustering(vectors, 1, "sparse_scoring", "minimum_similarity_score", 1)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ----Example for Syntactic clustering------------
 # input:  CR_vectors, SP_vectors,vectors_name
 

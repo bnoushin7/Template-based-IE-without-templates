@@ -1,4 +1,5 @@
-import nounOfVerbFinder
+#import nounOfVerbFinder
+from nltk.corpus import wordnet as wn
 
 
 def reverse_dictionary(first_fmt):
@@ -22,6 +23,8 @@ def parse_full_conll(indata, out_dict):
 
     # VB VBD VBG VBN VBP VBZ
     verbs = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
+    nouns = set(["NN", "NNP", "NNS", "NNPS"])
+    ev = wn.synset('event.n.01')
     sentence_index = 1
     verb_dict_temp = {}
     verb_obj = []
@@ -46,12 +49,26 @@ def parse_full_conll(indata, out_dict):
                 cnt += 1
                 verb_dict_temp[int(word_index)] = lemma
                 verb_obj.append(lemma)
-                noun_list = nounOfVerbFinder.noun_finder(lemma)
-                verb_obj.extend(noun_list)
+                #noun_list = nounOfVerbFinder.noun_finder(lemma)
+                #verb_obj.extend(noun_list)
                 '''
                 for ii in noun_list:
                     print("nouns of {} is {}".format(lemma, ii))
                 '''
+            if line.strip().split("\t")[3] in nouns:
+                cnt += 1
+                _noun = line.strip().split("\t")[2]
+                try:
+                    n_ev = wn.synsets(_noun)[0]
+                    res = ev.path_similarity(n_ev)
+                    if (res > 0.1):
+                        verb_obj.extend(_noun)
+
+                except:
+                    pass
+
+
+
             if line.strip().split("\t")[-1] == "dobj":
                 if line.strip().split("\t")[4] == "O" and line.strip().split("\t")[3] != "PRP":
                     cnt += 1

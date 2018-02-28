@@ -8,7 +8,7 @@ from os import listdir
 import xml.etree.ElementTree as ET
 
 # this is maximum number of xml files that you want to process at this time.
-numOfDocs = 1
+numOfDocs = 4
 
 
 def returnSentences(path):

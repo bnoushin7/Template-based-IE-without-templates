@@ -22,7 +22,13 @@ def noun_finder(verb_word):
     return list_of_related_nouns
 
 
-#print noun_finder("explode")
+
+ev= wordnet.synset('event.n.01')
+exp= wordnet.synsets('explosion')[0]
+text = ev.path_similarity(exp)
+
+
+print noun_finder("explode")
 '''
 it just works for lemma
 Sample calling

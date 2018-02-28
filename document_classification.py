@@ -8,7 +8,7 @@ What are our data structures?
 
 ### extract all documents of a template
 
-Make_IR_corpus --> for each template, find all the documents that are related to that document
+Make_IR_corpus --> for each template, find all the documents that are related to that template
 1- if IR(d,c)> 0.4
 Then what is IR ?
 if coverage(d,c) > min(3, |c|/4)

@@ -162,12 +162,13 @@ def refine_dist_matrix(dist_matrix, vectors_name):
 
 # --------------------------------------Clustering Test--------------
 # --------------Example1:
-
+'''
 vectors = np.random.normal([1, 1], size=[200, 2])
+#vectors = np.array([[0,0], [1,1], [1,0], [0,1], [0,-1], [20,20], [-1,0], [21,21]])
 dist_matrix = cosine_distances(vectors)
 final_clusters = run_clustering(vectors, 1, "simple", "maximum _cluster_members", 0)
 print(final_clusters)
-'''
+
 
 # --------------Example 2: 
 vectors = np.random.normal([1, 1], size=[200, 2])
@@ -175,8 +176,10 @@ dist_matrix = cosine_distances(vectors)
 final_clusters = run_clustering(vectors, 10, "simple", "maximum_clusters_number", 0)
 
 # --------------Example 3: 
+'''
 
-vectors = [np.array(f) for f in [[0, 1], [0, 2], [0, 5], [11, 0], [30, 0], [34, 0], [35, 0]]]
+#vectors = [np.array(f) for f in [[0, 1], [0, 2], [0, 5], [11, 0], [30, 0], [34, 0], [35, 0]]]
+vectors = [np.array(f) for f in [[11, 0], [0, 2], [0, 5], [0, 1], [30, 0], [34, 0], [35, 0]]]
 dist_matrix = cosine_distances(vectors)
 final_clusters = run_clustering(vectors, 1, "sparse_scoring", "minimum_similarity_score", 1)
 
@@ -195,7 +198,7 @@ mixed_dist_matrix = mix_SP_CR_similarity(CR_dist_matrix, SP_dist_matrix)
 dist_matrix = refine_dist_matrix(mixed_dist_matrix, vectors_name)
 
 final_clusters = run_clustering(CR_vectors, 1, "sparse_scoring", "minimum_similarity_score", 1)
-'''
+print("done")
 
 
 
