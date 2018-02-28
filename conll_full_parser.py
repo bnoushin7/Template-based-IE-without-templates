@@ -37,10 +37,10 @@ def parse_full_conll(indata, out_dict):
             verb_dict_temp.clear()
             verb_obj = []
             sentence_index += 1
+
             if sentence_index % 1000 == 1:
                 print(sentence_index)
 
-            continue
         else:
 
             word_index = line.strip().split("\t")[0]
