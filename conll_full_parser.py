@@ -61,8 +61,9 @@ def parse_full_conll(indata, out_dict):
                 try:
                     n_ev = wn.synsets(_noun)[0]
                     res = ev.path_similarity(n_ev)
-                    if (res > 0.1):
-                        verb_obj.extend(_noun)
+                    if (res > 0.2):
+                        #verb_obj.extend(_noun)
+                        verb_obj.append(_noun)
 
                 except:
                     pass
@@ -104,6 +105,6 @@ def parse_full_conll(indata, out_dict):
 
 
 #parse_full_conll("testkol.test","dict")
-parse_full_conll("dev-muc3-0001-0100.conll", "dict")
+parse_full_conll("dev-muc3-0001-0100.conll", "dictoo")
 #parse_full_conll("file_name_outputs", "real_dict")
 
