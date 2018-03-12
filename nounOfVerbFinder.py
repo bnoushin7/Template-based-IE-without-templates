@@ -28,7 +28,7 @@ exp= wordnet.synsets('explosion')[0]
 text = ev.path_similarity(exp)
 
 
-print noun_finder("explode")
+#print noun_finder("explode")
 '''
 it just works for lemma
 Sample calling

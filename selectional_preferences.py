@@ -119,7 +119,8 @@ def selectional_preferencer(indata, out_dict):
 
 
 
-    my_dict = {k:Counter(v) for k,v in new_dict.iteritems()}
+    #my_dict = {k:Counter(v) for k,v in new_dict.iteritems()}
+    my_dict = {k: Counter(v) for k, v in new_dict.items()}
     #print(my_dict['eat-object']['apple'])
 
 
@@ -142,11 +143,13 @@ def selectional_preferencer(indata, out_dict):
 
     final_dict = {} # This is the dictionary, with each syntactic relation as its keys and the feature_vector for each key, as its value
     vec_length = len(uniques_list)
-    for i in my_dict.iterkeys():  # Here I try to to find the number of occurance of each related syntactic relation using indexing_dict
+    #for i in my_dict.iterkeys():
+    for i in my_dict.keys():  # Here I try to to find the number of occurance of each related syntactic relation using indexing_dict
         final_dict[i] = [0] * vec_length
         val_list = my_dict[i]
 
-        for j in val_list.iterkeys():
+        #for j in val_list.iterkeys():
+        for j in val_list.keys():
             val_index = indexing_dict[j]
             final_dict[i][val_index] = my_dict[i][j]
 

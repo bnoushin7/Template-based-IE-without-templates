@@ -1,52 +1,5 @@
-'''
-What are our data structures?
-1- all_unique_words : all unique words of all documents, for all documents, extract all the words and then make them unique
-2- all_templates_triggers : dictionary of key: template, values all trigger words for templates
-3- clusterWords_docs: dictionay of
-
-
-
-### extract all documents of a template
-
-Make_IR_corpus --> for each template, find all the documents that are related to that template
-1- if IR(d,c)> 0.4
-Then what is IR ?
-if coverage(d,c) > min(3, |c|/4)
-    it is equal to avgm
-else 0
-
-So calc IR(d,c)
-cvgm is what? number of seen cluster words, so the number of times each word of cluster has been seen.
-It can be repeated
-
-What is avgm then? this is match score and is the average of number of times the words in cluster c apperas in document d.
-
-### Document classification
-''
-Now document classification starts, how? if a document has at least one trigger word (how trigger words are defined?)
-And P(w,t) > 0.2
-
-then What is P(w,t)?
-
-P(w,t) = (PIRt(w))/(for all s PIRs(w))
-
-Then what is PIRt(w) = (Ct(w))/(for all words Ct(v))
-Indeed it is the number of times word w has been repeated in IR-corpus of template t
-
-I think in the end, it is the number of times word "w" has been repeated in IR_corpus of template t devided by the number of times
-each word has been seen in IR corpus of template t, I mean the whole words of Ir corpus of t?
-Devided by this things for word w in IR corpus of all templates, does it mean the whole size of our big big template?
-
-Frequency tells us for each word of a template, each documents (or the referred document), how many wih repeat words have
-but IR_count tells us for all related documents of a template, how many times a "word" has been seen
-R_corpus[template]
-template_clusters che sakhtari ast va inke chizi hast kalame haye template ha ro dashte bashe?
-
-contains trigger check if in whole triggers, whole triggers of all templates
-'''
 from __future__ import division
 import numpy
-
 
 
 def word_count(word, doc_words):
@@ -112,9 +65,6 @@ def template_IR_corpus(template_cluster):  # return IR_corpus for a template ( r
     return (corpus)
 
 
-#
-
-
 
 def make_IR_corpus():  # generating IR_corpus, i.e. for all templates identifies related documents.
     Template_IR_crpus = dict()
@@ -178,7 +128,6 @@ def extract_templates_triggers():  # for all templates, extract triggers words o
 
 
 # --------------------Classification of new Documents ---------------
-# ------------------------------------------------
 
 
 def contains_trigger(new_doc, template):  # first condition for classification (section 5.1 of the  paper)
@@ -190,7 +139,7 @@ def contains_trigger(new_doc, template):  # first condition for classification (
 
 
 def document_triggers(
-        new_doc):  # return for each new doc, triggers of templates which new doc contains those. this is necessary for information extraction step(section 5.2 of the paper)
+        new_doc):  # return for each new doc, triggers of templates which new doc contains those. this is necessary for infor/ation extraction step(section 5.2 of the paper)
     template_triggers = dict()
     for temp in range(len(template_clusters)):
         for word in new_Doc_words[new_doc]:
@@ -229,24 +178,24 @@ def all_documents_classification(threshold):  # for all new documents identifes 
 
 # template clusters
 template_clusters=dict()
-template_clusters[0]=["ali","hasan", "mohamad"]
-template_clusters[1]=["maryam","zahra"]
+template_clusters[0]=["ross","chandler", "joey"]
+template_clusters[1]=["rachel","monica"]
 
 #documents in IR_corpus
 Doc_words=dict()
-Doc_words[0]=["ali","ali","hasan", "mohamad"]
-Doc_words[1]=["hasan","ali","hasan","ali"]
-Doc_words[2]=["maryam","maryam","hhasan","ali"]
-Doc_words[3]=["maryam","zahra"]
+Doc_words[0]=["ross","ross","chandler", "joey"]
+Doc_words[1]=["chandler","ross","chandler","ross"]
+Doc_words[2]=["rachel","rachel","xchandler","ross"]
+Doc_words[3]=["rachel","monica"]
 
 
 # new documents for classification and Information extraction
 new_Doc_words=dict()
-new_Doc_words[0]=["ali", "mohamad"]
-new_Doc_words[1]=["hasan","ali"]
-new_Doc_words[2]=["maryam","hasan"]
-new_Doc_words[3]=["maryam","zahra"]
-new_Doc_words[4]=["mmaryam","zzahra"]
+new_Doc_words[0]=["ross", "joey"]
+new_Doc_words[1]=["chandler","ross"]
+new_Doc_words[2]=["rachel","chandler"]
+new_Doc_words[3]=["rachel","monica"]
+new_Doc_words[4]=["xrachel","xmonica"]
 
 
 
@@ -306,4 +255,3 @@ def evaluate_classification_result(template, threshold,
 
 real_labels = [1, 1, 1, 1, 0]
 evaluate_classification_result(0, 0.2, real_labels)
-

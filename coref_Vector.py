@@ -157,7 +157,7 @@ def returnCorefVectors(allFilesSentences, allFilesCoreferences, allFilesSentence
                         else:
                             v[s2] = 1
                     vectors[s1] = v
-    print vectors
+    print (vectors)
 
     feat_vect = vectors.keys() #list of all syntact relations
     vec_length = len(feat_vect) #we wan our features vector be this size

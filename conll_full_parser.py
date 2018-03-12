@@ -19,7 +19,7 @@ def parse_full_conll(indata, out_dict):
     cnt = 0
     with open(indata, "r") as file:
         lines = file.readlines()
-    output = open('output_{0}.txt'.format(out_dict), 'w')
+    output = open('Outputs/output_{0}.txt'.format(out_dict), 'w')
 
     # VB VBD VBG VBN VBP VBZ
     verbs = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
@@ -99,12 +99,11 @@ def parse_full_conll(indata, out_dict):
     correct_dict = reverse_dictionary(main_dict)
     output.write(str(correct_dict))
     output.close()
-    print(correct_dict)
+    #print(correct_dict)
     return (correct_dict, cnt)
 
 
 
 #parse_full_conll("testkol.test","dict")
-parse_full_conll("dev-muc3-0001-0100.conll", "dictoo")
+#parse_full_conll("dev-muc3-0001-0100.conll", "dict")
 #parse_full_conll("file_name_outputs", "real_dict")
-
