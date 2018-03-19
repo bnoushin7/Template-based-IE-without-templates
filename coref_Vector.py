@@ -8,7 +8,7 @@ from os import listdir
 import xml.etree.ElementTree as ET
 
 # this is maximum number of xml files that you want to process at this time.
-numOfDocs = 4
+numOfDocs = 75
 
 
 def returnSentences(path):
@@ -167,15 +167,16 @@ def returnCorefVectors(allFilesSentences, allFilesCoreferences, allFilesSentence
                                                                    # able toaccesseach element count later.
 
 
-    for i in vectors.iterkeys(): # Here I try to to find the number of occurance of each related syntactic relation using indexing_dict
+    #for i in vectors.iterkeys():  # Here I try to to find the number of occurance of each related syntactic relation using indexing_dict
+    for i in vectors.keys(): # Here I try to to find the number of occurance of each related syntactic relation using indexing_dict
         final_dict[i] = [0] * vec_length
         val_dict = vectors[i]
 
-        for j in val_dict.iterkeys():
+        for j in val_dict.keys():
             idx = indexing_dict[j]
             final_dict[i][idx] = vectors[i][j]
 
-
+    #print(final_dict)
     return vectors # I am not sure what to return, maybe we need to retrn final_dict too?
 
 

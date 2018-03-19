@@ -1,13 +1,19 @@
+
 import time
 import sys
 from os.path import dirname
 
-textFilePath = "conll_full_parser.py"
+#textFilePath = "D:/summer_task-dev/conll_full_parser.py"
+textFilePath = "/home/noushin/summerTask/conll_full_parser.py"
 textFileFolder = dirname(textFilePath)  # = "/home/me/somewhere/textfiles"
+testfile = open("test_file.txt", "w")
 
 sys.path.append(textFileFolder)
 
+
 import nounOfVerbFinder
+
+import Syntactic_Clustering
 
 import scipy.cluster.hierarchy as sch
 # import distance_matrix_calculation
@@ -27,18 +33,17 @@ import sys
 import nltk
 from nltk.corpus import stopwords
 import math
-
 # from collections import Counter
 
 
-
-
+import coref_Vector
+import selectional_preferences
 
 conll = dict()
 idx = 0
 
-for file in __import__('os').listdir("Conll/"):
-    conll[idx] = (word_sent_dict, cntr) = conll_full_parser.parse_full_conll("Conll/" + file, file)
+for file in __import__('os').listdir("/home/noushin/summerTask/Conll/"):
+    conll[idx] = (word_sent_dict, cntr) = conll_full_parser.parse_full_conll("/home/noushin/summerTask/Conll/" + file, file)
     idx += 1
 
 # kidnap_lst=list()
@@ -57,6 +62,7 @@ all_keys = list()
 P_Words = list()
 C_Dist = dict()
 
+
 def Gwi_wj(lst1, lst2):
     t = []
     res = 0
@@ -74,18 +80,13 @@ def Gwi_wj(lst1, lst2):
 #    word_sent.append( conll[doc_idx])
 
 word_sent = conll
-print("#####################avali###################################################")
-#print(word_sent)
 # conll.clear()
-len1 = len(word_sent)
+len(word_sent)
 
 for doc_idx in range(len(word_sent)):
     keys = word_sent[doc_idx][0].keys()
     for key in keys:
         word_sent[doc_idx][0][key] = np.unique(word_sent[doc_idx][0][key])
-len2 = len(word_sent)
-print("######################dovomi##################################################")
-#print(word_sent)
 
 for doc_idx in range(len(word_sent)):
     doc_keys = word_sent[doc_idx][0].keys()
@@ -105,22 +106,19 @@ for word_idx in range(len(all_keys)):
 len(Count)
 
 great_1_idx = np.where(np.array(Count) > 1)[0]
-#print(np.where(np.array(Count) > 1))
 less_500_idx = np.where(np.array(Count) < 500)[0]
 
 frequent_words_idx = np.array(list(set(great_1_idx) & set(less_500_idx)))
 
 len(frequent_words_idx)
-#print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=")
-#print(len(Count))
-#print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=")
+
 Count = np.array(Count)[frequent_words_idx]
-#print(len(Count))
+
 len(Count)
-#print(len(all_keys))
+
 all_keys = np.array(all_keys)[frequent_words_idx]  # only worods with occurance count of at lest 2 times are selected.
 len(all_keys)
-#print(len(all_keys))
+
 np.max(Count)
 
 words_dict = dict()
@@ -128,20 +126,10 @@ for word_idx in range(len(all_keys)):
     words_dict[all_keys[word_idx]] = Count[word_idx]
 
 all_keys = np.sort(all_keys)
-'''
-print("count e ghabli")
-print(Count)
-print("**************************************************************")
-'''
 
 Count = [0] * len(all_keys)
 for word_idx in range(len(all_keys)):
     Count[word_idx] = words_dict[all_keys[word_idx]]
-'''
-print("count e jadid")
-print(Count)
-print("**************************************************************")
-'''
 
 # np.where( all_keys=='ransom' )
 # Count[2045]
@@ -203,14 +191,8 @@ for word1_idx in range(len(all_keys) - 1):
         word1 = all_keys[word1_idx]
         word2 = all_keys[word2_idx]
         if ((word1, word2) in P_Dist.keys()):
-            print(P_Dist[(word1, word2)])
-            print(P_Words[word1_idx])
-            print(P_Words[word2_idx])
-            if(P_Words[word1_idx] * P_Words[word2_idx] == 0):
-                continue
-            else:
-                pmi_matrix[word1_idx, word2_idx] = P_Dist[(word1, word2)] / (P_Words[word1_idx] * P_Words[word2_idx])
-                pmi_matrix[word2_idx, word1_idx] = pmi_matrix[word1_idx, word2_idx]
+            pmi_matrix[word1_idx, word2_idx] = P_Dist[(word1, word2)] / (P_Words[word1_idx] * P_Words[word2_idx])
+            pmi_matrix[word2_idx, word1_idx] = pmi_matrix[word1_idx, word2_idx]
 
 P_Dist.clear()
 C_Dist.clear()
@@ -220,8 +202,7 @@ max_pmi = np.max(pmi_matrix)
 
 distance_matrix = max_pmi - pmi_matrix
 
-# for word
-# _idx in range(len(all_keys)-1 ) :
+# for word1_idx in range(len(all_keys)-1 ) :
 #    for word2_idx in range( (word1_idx+1),len(all_keys) ) :
 #        distance_matrix[word1_idx , word2_idx]= max_pmi - pmi_matrix[word1_idx ,word2_idx]
 #        distance_matrix[word2_idx ,word1_idx]= distance_matrix[word1_idx ,word2_idx]
@@ -242,27 +223,141 @@ n_clusters = 220
 y = sch.fcluster(clust_tree, n_clusters, 'maxclust')  # 100
 
 cls_cnt = Counter(y)
+print(cls_cnt)
 cls_cnt.most_common(10)
 
-# ------------------------Clusters Members ---------------
-# --------------------kidnapp cluster------
-kidnap_idx = np.where(all_keys == 'kidnap')
-kidnap_cls = y[kidnap_idx]
-members_idx = np.where(y == kidnap_cls)
-all_keys[members_idx]
 
-# -------------Cluster1--------------------
+# ------------------------Clusters syntactic -----------------------------
+
+
+def extract_cluster_syntactic(cls_members):
+    cls_syntactics = []
+    for idx in range(len(cls_members)):
+        if ':' in cls_members[idx]:
+            colon_idx = cls_members[idx].index(':')
+            verb = cls_members[idx][0:colon_idx]
+            cls_syntactics.append(verb + ':o')
+            cls_syntactics.append(verb + ':s')
+        else:
+            verb = cls_members[idx]
+            cls_syntactics.append(verb + ':o')
+            cls_syntactics.append(verb + ':s')
+    cls_syntactics = np.unique(cls_syntactics)
+    return (cls_syntactics)
+
+
+def extract_Cluster_CR_SP(cls_syntactics):
+    Cluster_CR = dict()
+    Cluster_SP = dict()
+    for idx in range(len(cls_syntactics)):
+        if cls_syntactics[idx] in CR_Dict.keys():
+            Cluster_CR[cls_syntactics[idx]] = CR_Dict[cls_syntactics[idx]]
+        if cls_syntactics[idx] in SP_Dict.keys():
+            Cluster_SP[cls_syntactics[idx]] = SP_Dict[cls_syntactics[idx]]
+    return Cluster_CR, Cluster_SP
+
+
+# --------------------------Selectional Preferences for all Documents------------
+SP = dict()
+idx = 0
+
+for file in __import__('os').listdir("Conll/"):
+    SP[idx] = selectional_preferences.selectional_preferencer("/home/noushin/summerTask/Conll/" + file,
+                                                              "/home/noushin/summerTask/select_pe")
+    idx += 1
+
+SP_Dict = dict()
+SP_Dict = SP[0]
+#print("SP_Dict: ", SP_Dict)
+
+for sp_idx in range(1, len(SP)):
+    for key in SP[sp_idx].keys():
+        if key in SP_Dict.keys():
+            SP_Dict[key] = SP_Dict[key] + SP[sp_idx][key]
+        else:
+            SP_Dict[key] = SP[sp_idx][key]
+#print("SP_Dict jadid: ", SP_Dict)
+# sp_out=selectional_preferencer("D:/summer_task-dev/dev-muc3-0001-0100.conll_bk", "D:/summer_task-dev/select_pe")
+
+
+# ----------------Coreference Resolution for all XMLs --------------
+#path = 'D:/summer_task-dev/xml_files'
+path = '/home/noushin/summerTask/xml_files'
+
+allFilesSentences = coref_Vector.returnSentences(path)
+allFilesCoreferences = coref_Vector.returnCoRefs(path)
+allFilesSentencesDependencies = coref_Vector.returnDependencies(path)
+CR_Dict = coref_Vector.returnCorefVectors(allFilesSentences, allFilesCoreferences, allFilesSentencesDependencies)
+testfile.write("Coref {}".format(CR_Dict))
+testfile.write("Selec {}".format(SP_Dict))
+
+# --------------------------------------------kidnapp cluster-----------------------------
+kidnap_idx = np.where(all_keys == 'kidnap')
+print(all_keys)
+print("type(kidnap_idx): ",type(kidnap_idx))
+print("(kidnap_idx): ",kidnap_idx)
+print("(len kidnap_idx): ",len(kidnap_idx))
+
+print("y,type(y), len(y)",y,type(y), len(y))
+kidnap_cls = y[kidnap_idx]
+print("type(kidnap_cls):  ",type(kidnap_cls))
+print("(kidnap_cls):  ",kidnap_cls)
+print("(len  kidnap_cls):  ",len(kidnap_cls))
+
+members_idx = np.where(y == kidnap_cls)
+print("type(members_idx): ",type(members_idx))
+print("(members_idx)",members_idx)
+print("(len members_idx)",len(members_idx))
+
+cls_members = all_keys[members_idx]
+print("type(cls_members): ",type(cls_members))
+print("(cls_members): ",cls_members)
+print("(len cls_members)",len(cls_members))
+
+# ------------cluster syntactic relation extraction --------
+cls_syntactics = extract_cluster_syntactic(cls_members)
+
+# ------------Cluster CR adn SP  Extraction-------------------
+Cluster_CR, Cluster_SP = extract_Cluster_CR_SP(cls_syntactics)
+
+# ----------syntactic clustering--------------
+
+clusters = Syntactic_Clustering.syntactic_clustering(Cluster_CR, Cluster_SP)
+
+# ----------------------------------------------Cluster1--------------------
 large_cls_idx = cls_cnt.most_common(10)[0][0]
 cls_members_idx = np.where(y == large_cls_idx)
 
-np.array(all_keys)[cls_members_idx]
+cls_members = np.array(all_keys)[cls_members_idx]
 
-# -------------Cluster2--------------------
+# ------------cluster syntactic relation extraction --------
+cls_syntactics = extract_cluster_syntactic(cls_members)
+
+# -------------Cluster CR adn SP  Extraction-------------------
+Cluster_CR, Cluster_SP = extract_Cluster_CR_SP(cls_syntactics)
+
+# ----------syntactic clustering--------------
+
+clusters = Syntactic_Clustering.syntactic_clustering(Cluster_CR, Cluster_SP)
+print(clusters)
+print("11111111111111111111111111111111111111111")
+# -----------------------------------------------Cluster2--------------------
 large_cls_idx = cls_cnt.most_common(10)[1][0]
 cls_members_idx = np.where(y == large_cls_idx)
 
-np.array(all_keys)[cls_members_idx]
+cls_members = np.array(all_keys)[cls_members_idx]
 
+# ------------cluster syntactic relation extraction --------
+cls_syntactics = extract_cluster_syntactic(cls_members)
+
+# -------------Cluster CR adn SP  Extraction-------------------
+Cluster_CR, Cluster_SP = extract_Cluster_CR_SP(cls_syntactics)
+
+# ----------syntactic clustering--------------
+
+clusters = Syntactic_Clustering.syntactic_clustering(Cluster_CR, Cluster_SP)
+print(clusters)
+print("11111111111111111111111111111111111111111")
 # -------------Cluster3--------------------
 
 large_cls_idx = cls_cnt.most_common(10)[2][0]
@@ -317,6 +412,8 @@ large_cls_idx = cls_cnt.most_common(10)[9][0]
 cls_members_idx = np.where(y == large_cls_idx)
 
 np.array(all_keys)[cls_members_idx]
+print("done done done")
+
 
 
 
