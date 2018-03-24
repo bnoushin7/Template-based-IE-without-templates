@@ -1,15 +1,9 @@
-'''
-Created on 3/12/18
-Sample code for
-@author: Noushin
-'''
 
 import sys
 from os.path import dirname
 
-#textFilePath = "D:/summer_task-dev/conll_full_parser.py"
 textFilePath = "/home/noushin/summerTask/conll_full_parser.py"
-textFileFolder = dirname(textFilePath)  # = "/home/me/somewhere/textfiles"
+textFileFolder = dirname(textFilePath)
 
 sys.path.append(textFileFolder)
 import selectional_preferences
@@ -27,7 +21,8 @@ def initialize(vectors):
     return (clusters)
 
 
-def r(clusters, cluster1, cluster2):
+# def r(clusters, cluster1, cluster2):
+def r(clusters, cluster1, cluster2, dist_matrix):
     non_zero_count = 0
 
     similarity_matrix = 1 - dist_matrix
@@ -39,7 +34,8 @@ def r(clusters, cluster1, cluster2):
     return (non_zero_count / (len(clusters[cluster1]) * len(clusters[cluster2])))
 
 
-def score(clusters, cluster1, cluster2):
+# def score(clusters, cluster1,cluster2 ):
+def score(clusters, cluster1, cluster2, dist_matrix):
     similarity_matrix = 1 - dist_matrix
     similarity_sum = 0
 
@@ -47,10 +43,11 @@ def score(clusters, cluster1, cluster2):
         for clus2_member in clusters[cluster2]:
             similarity_sum += similarity_matrix[clus1_member, clus2_member]
 
-    return (similarity_sum * r(clusters, cluster1, cluster2))
+    return (similarity_sum * r(clusters, cluster1, cluster2, dist_matrix))
 
 
-def clusters_distance(clusters, cluster1, cluster2, dist_type):
+# def clusters_distance(clusters, cluster1 , cluster2 , dist_type):
+def clusters_distance(clusters, cluster1, cluster2, dist_type, dist_matrix):
     distance = 0
 
     if dist_type == "simple":
@@ -61,18 +58,20 @@ def clusters_distance(clusters, cluster1, cluster2, dist_type):
         distance /= len(clusters[cluster1]) * len(clusters[cluster2])
 
     if dist_type == "sparse_scoring":  # as described in section 4.3.2 of the paper.
-        distance = 1 - score(clusters, cluster1, cluster2)
+        distance = 1 - score(clusters, cluster1, cluster2, dist_matrix)
 
     return (distance)
 
 
-def find_closest_clusters(clusters, dist_type):
+# def find_closest_clusters (clusters, dist_type ):
+def find_closest_clusters(clusters, dist_type, dist_matrix):
     closest = dict()
     min_distance = np.inf
 
     for clus1 in range(len(clusters)):
         for clus2 in range(clus1 + 1, len(clusters)):
-            distance = clusters_distance(clusters, clus1, clus2, dist_type)
+            # distance=clusters_distance(clusters,clus1, clus2 , dist_type)
+            distance = clusters_distance(clusters, clus1, clus2, dist_type, dist_matrix)
 
             if distance < min_distance:
                 min_distance = distance
@@ -84,7 +83,8 @@ def find_closest_clusters(clusters, dist_type):
     return (closest)
 
 
-def stop_condition(clusters, stop_type, dist_type, clusters_number, minimum_score):
+# def stop_condition(clusters, stop_type,dist_type, clusters_number, minimum_score):
+def stop_condition(clusters, stop_type, dist_type, clusters_number, minimum_score, dist_matrix):
     max_count = 0
     stop = False
 
@@ -102,8 +102,10 @@ def stop_condition(clusters, stop_type, dist_type, clusters_number, minimum_scor
             stop = True
 
     if stop_type == "minimum_similarity_score":
-        next_closest_clusters = find_closest_clusters(clusters, dist_type)
-        if score(clusters, next_closest_clusters[1], next_closest_clusters[2]) < minimum_score:
+        # next_closest_clusters=find_closest_clusters (clusters, dist_type )
+        next_closest_clusters = find_closest_clusters(clusters, dist_type, dist_matrix)
+        # if score(clusters, next_closest_clusters[1],next_closest_clusters[2] ) <minimum_score:
+        if score(clusters, next_closest_clusters[1], next_closest_clusters[2], dist_matrix) < minimum_score:
             stop = True
 
     return (stop)
@@ -122,11 +124,14 @@ def merge_clusters(clusters, clus1, clus2):
     return (new_clusters)
 
 
-def run_clustering(vectors, clusters_number, dist_type, stop_type, minimum_score):
+# def run_clustering(vectors , clusters_number,dist_type, stop_type, minimum_score ):
+def run_clustering(vectors, clusters_number, dist_type, stop_type, minimum_score, dist_matrix):
     clusters = initialize(vectors)
 
-    while not stop_condition(clusters, stop_type, dist_type, clusters_number, minimum_score):
-        closest_pair = find_closest_clusters(clusters, dist_type)
+    # while not stop_condition(clusters, stop_type,dist_type, clusters_number,minimum_score):
+    while not stop_condition(clusters, stop_type, dist_type, clusters_number, minimum_score, dist_matrix):
+        # closest_pair=find_closest_clusters (clusters, dist_type )
+        closest_pair = find_closest_clusters(clusters, dist_type, dist_matrix)
         cluster1 = closest_pair[1]
         cluster2 = closest_pair[2]
 
@@ -172,13 +177,16 @@ def is_same_verb_O_S(vector1_name, vector2_name):
     return (same_verb)
 
 
-def refine_dist_matrix(dist_matrix, vectors_name):
+# def refine_dist_matrix(dist_matrix,vectors_name):
+def refine_dist_matrix(dist_matrix, vectors_name, CR_dist_matrix):
     N = CR_dist_matrix.shape[0]
     for row in range(N):
         for col in range(row + 1, N):
             if is_same_verb_O_S(vectors_name[row], vectors_name[col]):
-                mixed_dist_matrix[row, col] = 100000
-    return (mixed_dist_matrix)
+                # mixed_dist_matrix[row,col]=100000
+                dist_matrix[row, col] = 100000
+    # return(mixed_dist_matrix)
+    return (dist_matrix)
 
 
 # *****************************************************************************
@@ -353,8 +361,12 @@ def syntactic_clustering(CR_Dict, SP_Dict):
         CR_dist_matrix = cosine_distances(NER_CR_Vectors)
         SP_dist_matrix = cosine_distances(NER_SP_Vectors)
         mixed_dist_matrix = mix_SP_CR_similarity(CR_dist_matrix, SP_dist_matrix)
-        dist_matrix = refine_dist_matrix(mixed_dist_matrix, vectors_name)
-        final_clusters = run_clustering(NER_CR_Vectors, 1, "sparse_scoring", "minimum_similarity_score", 0.5)
+
+        # dist_matrix=refine_dist_matrix(mixed_dist_matrix ,vectors_name )
+        dist_matrix = refine_dist_matrix(mixed_dist_matrix, vectors_name, CR_dist_matrix)
+        # final_clusters=run_clustering(NER_CR_Vectors , 1,"sparse_scoring","minimum_similarity_score",0.5)
+        final_clusters = run_clustering(NER_CR_Vectors, 1, "sparse_scoring", "minimum_similarity_score", 0.5,
+                                        dist_matrix)
         # final_clusters=run_clustering(NER_CR_Vectors , 2,"simple","maximum_clusters_number",0)
         clusters_with_members_names = set_Member_Names(final_clusters, vectors_name)
         NER_Clusters[NER] = clusters_with_members_names

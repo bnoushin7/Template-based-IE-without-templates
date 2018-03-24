@@ -219,11 +219,11 @@ del (distance_matrix)
 clust_tree = sch.linkage(dist, method='average')
 
 del (dist)
-n_clusters = 220
+n_clusters = 6
 y = sch.fcluster(clust_tree, n_clusters, 'maxclust')  # 100
 
 cls_cnt = Counter(y)
-print(cls_cnt)
+#print(cls_cnt)
 cls_cnt.most_common(10)
 
 
@@ -293,27 +293,81 @@ testfile.write("Selec {}".format(SP_Dict))
 
 # --------------------------------------------kidnapp cluster-----------------------------
 kidnap_idx = np.where(all_keys == 'kidnap')
+print("all_keys: kidnap:   ",all_keys)
+"""
+
 print(all_keys)
 print("type(kidnap_idx): ",type(kidnap_idx))
 print("(kidnap_idx): ",kidnap_idx)
 print("(len kidnap_idx): ",len(kidnap_idx))
 
 print("y,type(y), len(y)",y,type(y), len(y))
+"""
 kidnap_cls = y[kidnap_idx]
+print("(kidnap_cls):  ",(kidnap_cls))
+"""
 print("type(kidnap_cls):  ",type(kidnap_cls))
 print("(kidnap_cls):  ",kidnap_cls)
 print("(len  kidnap_cls):  ",len(kidnap_cls))
-
+"""
 members_idx = np.where(y == kidnap_cls)
+print("(members_idx)",members_idx)
+"""
 print("type(members_idx): ",type(members_idx))
 print("(members_idx)",members_idx)
 print("(len members_idx)",len(members_idx))
-
+"""
 cls_members = all_keys[members_idx]
+print("(cls_members): ",cls_members)
+"""
 print("type(cls_members): ",type(cls_members))
 print("(cls_members): ",cls_members)
 print("(len cls_members)",len(cls_members))
+"""
+# ------------cluster syntactic relation extraction --------
+cls_syntactics = extract_cluster_syntactic(cls_members)
+print("cls_syntactics ", cls_syntactics )
 
+
+# ------------Cluster CR adn SP  Extraction-------------------
+Cluster_CR, Cluster_SP = extract_Cluster_CR_SP(cls_syntactics)
+print("Cluster_CR", Cluster_CR)
+print("Cluster_SP", Cluster_SP)
+# ----------syntactic clustering--------------
+print("ay baba")
+clusters = Syntactic_Clustering.syntactic_clustering(Cluster_CR, Cluster_SP)
+print(clusters)
+print("ay baba")
+
+#--------------------------------------------------
+kidnap_idx = np.where(all_keys == 'attack')
+"""
+
+print(all_keys)
+print("type(kidnap_idx): ",type(kidnap_idx))
+print("(kidnap_idx): ",kidnap_idx)
+print("(len kidnap_idx): ",len(kidnap_idx))
+
+print("y,type(y), len(y)",y,type(y), len(y))
+"""
+kidnap_cls = y[kidnap_idx]
+"""
+print("type(kidnap_cls):  ",type(kidnap_cls))
+print("(kidnap_cls):  ",kidnap_cls)
+print("(len  kidnap_cls):  ",len(kidnap_cls))
+"""
+members_idx = np.where(y == kidnap_cls)
+"""
+print("type(members_idx): ",type(members_idx))
+print("(members_idx)",members_idx)
+print("(len members_idx)",len(members_idx))
+"""
+cls_members = all_keys[members_idx]
+"""
+print("type(cls_members): ",type(cls_members))
+print("(cls_members): ",cls_members)
+print("(len cls_members)",len(cls_members))
+"""
 # ------------cluster syntactic relation extraction --------
 cls_syntactics = extract_cluster_syntactic(cls_members)
 
@@ -321,8 +375,12 @@ cls_syntactics = extract_cluster_syntactic(cls_members)
 Cluster_CR, Cluster_SP = extract_Cluster_CR_SP(cls_syntactics)
 
 # ----------syntactic clustering--------------
-
+print("ay baba")
 clusters = Syntactic_Clustering.syntactic_clustering(Cluster_CR, Cluster_SP)
+print(clusters)
+print("ay baba")
+
+#--------------------------------------------------
 
 # ----------------------------------------------Cluster1--------------------
 large_cls_idx = cls_cnt.most_common(10)[0][0]
@@ -339,8 +397,8 @@ Cluster_CR, Cluster_SP = extract_Cluster_CR_SP(cls_syntactics)
 # ----------syntactic clustering--------------
 
 clusters = Syntactic_Clustering.syntactic_clustering(Cluster_CR, Cluster_SP)
-print(clusters)
-print("11111111111111111111111111111111111111111")
+#print(clusters)
+#print("11111111111111111111111111111111111111111")
 # -----------------------------------------------Cluster2--------------------
 large_cls_idx = cls_cnt.most_common(10)[1][0]
 cls_members_idx = np.where(y == large_cls_idx)
@@ -356,8 +414,8 @@ Cluster_CR, Cluster_SP = extract_Cluster_CR_SP(cls_syntactics)
 # ----------syntactic clustering--------------
 
 clusters = Syntactic_Clustering.syntactic_clustering(Cluster_CR, Cluster_SP)
-print(clusters)
-print("11111111111111111111111111111111111111111")
+#print(clusters)
+#print("11111111111111111111111111111111111111111")
 # -------------Cluster3--------------------
 
 large_cls_idx = cls_cnt.most_common(10)[2][0]
